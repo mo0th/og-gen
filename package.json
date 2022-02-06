@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "chrome-aws-lambda": "^10.1.0",
-    "node-fetch": "^3.2.0",
+    "node-fetch": "2.6.7",
     "puppeteer-core": "^13.1.3"
   }
 }
