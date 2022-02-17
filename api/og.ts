@@ -13,7 +13,8 @@ const handler: VercelApiHandler = async (req, res) => {
   try {
     if (
       typeof category !== 'string' ||
-      (Boolean(title) && typeof title !== 'string')
+      (Boolean(title) && typeof title !== 'string') ||
+      typeof _url !== 'string'
     ) {
       throw new Error('Invalid query')
     }
@@ -32,7 +33,9 @@ const handler: VercelApiHandler = async (req, res) => {
     })
 
     const url =
-      typeof _url === 'string' ? _url : getUrl(category, title as string)
+      typeof _url === 'string' && _url
+        ? _url
+        : getUrl(category, title as string)
     await page.goto(url, { timeout: 15 * 1000 })
     const data = await page.screenshot({
       type: 'png',
