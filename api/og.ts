@@ -9,7 +9,7 @@ const getUrl = (category: string, title?: string) =>
   }`
 
 const handler: VercelApiHandler = async (req, res) => {
-  const { category, title } = req.query
+  const { category, title, url: _url } = req.query
   try {
     if (
       typeof category !== 'string' ||
@@ -31,7 +31,8 @@ const handler: VercelApiHandler = async (req, res) => {
       height: 630,
     })
 
-    const url = getUrl(category, title as string)
+    const url =
+      typeof _url === 'string' ? _url : getUrl(category, title as string)
     await page.goto(url, { timeout: 15 * 1000 })
     const data = await page.screenshot({
       type: 'png',
@@ -46,7 +47,7 @@ const handler: VercelApiHandler = async (req, res) => {
     console.log('og image -', err)
     res.setHeader('Content-Type', 'image/png')
     const response = await fetch('https://mooth.tech/og.png')
-    res.end(await response.arrayBuffer())
+    res.end(await response.buffer())
   }
 }
 
