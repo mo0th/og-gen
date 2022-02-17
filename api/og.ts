@@ -3,21 +3,28 @@ import core from 'puppeteer-core'
 import chrome from 'chrome-aws-lambda'
 import fetch from 'node-fetch'
 
-const getUrl = (category: string, title?: string) =>
-  `https://mooth.tech/og/${category}/${
-    title ? encodeURIComponent(title as string) : ''
-  }`
+const base = 'https://mooth.tech/og/'
+
+const getUrl = (query: any): string => {
+  const { category, title, url } = query
+
+  if (typeof category === 'string') {
+    if (title && typeof title === 'string') {
+      return `${base}${category}/${title}`
+    }
+    return `${base}${category}`
+  }
+
+  if (typeof url === 'string') {
+    return url
+  }
+
+  throw new Error('invalid query')
+}
 
 const handler: VercelApiHandler = async (req, res) => {
-  const { category, title, url: _url } = req.query
   try {
-    if (
-      typeof category !== 'string' ||
-      (Boolean(title) && typeof title !== 'string') ||
-      typeof _url !== 'string'
-    ) {
-      throw new Error('Invalid query')
-    }
+    const url = getUrl(req.query)
 
     const browser = await core.launch({
       args: chrome.args,
@@ -32,10 +39,6 @@ const handler: VercelApiHandler = async (req, res) => {
       height: 630,
     })
 
-    const url =
-      typeof _url === 'string' && _url
-        ? _url
-        : getUrl(category, title as string)
     await page.goto(url, { timeout: 15 * 1000 })
     const data = await page.screenshot({
       type: 'png',
