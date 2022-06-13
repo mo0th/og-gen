@@ -6,13 +6,13 @@ import fetch from 'node-fetch'
 const base = 'https://soorria.com/og/'
 
 const getUrl = (query: any): string => {
-  const { category, title, url } = query
+  const { subtitle, title, url } = query
 
-  if (typeof category === 'string') {
-    if (title && typeof title === 'string') {
-      return `${base}${category}/${title}`
+  if (typeof title === 'string') {
+    if (subtitle && typeof subtitle === 'string') {
+      return `${base}${title}/${subtitle}`
     }
-    return `${base}${category}`
+    return `${base}${title}`
   }
 
   if (typeof url === 'string') {
