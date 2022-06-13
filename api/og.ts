@@ -9,10 +9,11 @@ const getUrl = (query: any): string => {
   const { subtitle, title, url } = query
 
   if (typeof title === 'string') {
+    let url = `${base}${encodeURIComponent(title)}`
     if (subtitle && typeof subtitle === 'string') {
-      return `${base}${title}/${subtitle}`
+      url += `/${encodeURIComponent(subtitle)}`
     }
-    return `${base}${title}`
+    return url
   }
 
   if (typeof url === 'string') {
@@ -48,7 +49,6 @@ const handler: VercelApiHandler = async (req, res) => {
       console.error(err)
       throw new Error(err)
     }
-
 
     const data = await page.screenshot({
       type: 'png',
