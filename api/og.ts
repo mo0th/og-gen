@@ -3,7 +3,7 @@ import core from 'puppeteer-core'
 import chrome from 'chrome-aws-lambda'
 import fetch from 'node-fetch'
 
-const base = 'https://mooth.tech/og/'
+const base = 'https://soorria.com/og/'
 
 const getUrl = (query: any): string => {
   const { category, title, url } = query
@@ -52,7 +52,7 @@ const handler: VercelApiHandler = async (req, res) => {
   } catch (err) {
     console.log('og image -', err)
     res.setHeader('Content-Type', 'image/png')
-    const response = await fetch('https://mooth.tech/og.png')
+    const response = await fetch('https://soorria.com/og.png')
     res.end(await response.buffer())
   }
 }
