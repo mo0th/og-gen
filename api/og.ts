@@ -39,7 +39,17 @@ const handler: VercelApiHandler = async (req, res) => {
       height: 630,
     })
 
-    await page.goto(url, { timeout: 15 * 1000 })
+    console.log(`fetching ${url}`)
+
+    const response = await page.goto(url, { timeout: 15 * 1000 })
+
+    if (!response.ok) {
+      const err = `Could not get ${url}`
+      console.error(err)
+      throw new Error(err)
+    }
+
+
     const data = await page.screenshot({
       type: 'png',
     })
@@ -51,6 +61,7 @@ const handler: VercelApiHandler = async (req, res) => {
     res.end(data)
   } catch (err) {
     console.log('og image -', err)
+    res.setHeader('Cache-Control', 's-maxage=0, must-revalidate')
     res.setHeader('Content-Type', 'image/png')
     const response = await fetch('https://soorria.com/og.png')
     res.end(await response.buffer())
